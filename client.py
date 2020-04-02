@@ -28,6 +28,7 @@ def main(args):
         while True:
             i_msg += 1
             rx_data, from_addr = udp.recv_msg(client)
+            print(f"Msg {i_msg:3} received")
             msg    = f"Client[{args.id}] msg #{i_msg};;;;"
             rx_msg = f"Client[{args.id}] {client_addr[0]}:{client_addr[1]}" +\
                      f" <= {from_addr[0]}:{from_addr[1]};;;;"

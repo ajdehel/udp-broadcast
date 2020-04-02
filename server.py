@@ -35,6 +35,7 @@ def main(args):
                      f" => {broadcast_addr[0]}:{broadcast_addr[1]};;;;"
             if not udp.send_msg(server, broadcast_addr, msg, tx_msg):
                 break
+            print(f"Msg {i_msg:3} sent")
             time.sleep(waittime)
     except KeyboardInterrupt:
         print("Terminate Signal Captured")
