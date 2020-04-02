@@ -23,6 +23,8 @@ def main(args):
     client, client_addr = udp.get_client(addr=(host, args.data_port),
                                          sockopts=sockopts)
     sink_addr = ("127.0.0.1", args.sink_port)
+    if not client:
+        sys.exit(1)
     try:
         i_msg = 0
         while True:
