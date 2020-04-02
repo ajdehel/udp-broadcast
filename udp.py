@@ -18,7 +18,7 @@ def get_socket(addr=None, sockopts=dict()):
         if addr:
             sock.bind(addr)
     except OSError as e:
-        print("! Error: Could not create socket; {e}")
+        print(f"! Error: Could not create socket; {e}")
         sock = sock
     finally:
         return sock, addr
