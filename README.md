@@ -50,4 +50,6 @@ $ ip netns
 $ sudo ip netns exec <HOST> ip addr show
 ```
 
+## References
 
+The commands to create the virtual network came from Ciro S. Costa via https://ops.tips/blog/using-network-namespaces-and-bridge-to-isolate-servers/
