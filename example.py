@@ -113,7 +113,7 @@ def run(args):
     network_ip = IPv4Addr(args.network)
     bc_ip     = IPv4Addr(args.network)
     bc_ip[-1] = 255
-    bc_addr   = f"{bc_ip}:{args.data_port}"
+    bc_addr   = f"{bc_ip}:{args.broadcast_port}"
     sink_ip     = IPv4Addr(args.network)
     sink_ip[-1] = 2
     sink_addr   = f"{sink_ip}:{args.sink_port}"
@@ -121,7 +121,7 @@ def run(args):
     sink    =   ip_netns_exec(f"{if_prefix}vhost2",
                     f"./sink.py {args.sink_port}", stdout=None, stderr=None)
     clients = [ ip_netns_exec(f"{if_prefix}vhost{3+i_}",
-                    f"./client.py {args.data_port} {sink_addr} {i_}",
+                    f"./client.py {args.broadcast_port} {sink_addr} {i_}",
                     logfilename=f"client.{i_}.out" if args.logging else None)
                 for i_ in range(args.num_clients) ]
     servers = [ ip_netns_exec(f"{if_prefix}vhost{3+i_}",
@@ -163,7 +163,7 @@ def parse_args():
     subparsers = parser.add_subparsers()
     # Parser for `run` command
     r = subparsers.add_parser("run", help="run the example")
-    r.add_argument("data_port", type=int,
+    r.add_argument("broadcast_port", type=int,
                    help="Port messages are broadcast to")
     r.add_argument("sink_port", type=int,
                    help="Port that clients send messages to")
