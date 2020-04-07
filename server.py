@@ -17,7 +17,8 @@ import udp
 #===============================================================================
 def main(args):
     random.seed(args.id)
-    broadcast_addr = ("127.255.255.255", args.data_port)
+    broadcast_addr = args.broadcast_addr.split(":")
+    broadcast_addr = broadcast_addr[0], int(broadcast_addr[1])
     sockopts = dict()
     sockopts[socket.SOL_SOCKET] = dict()
     sockopts[socket.SOL_SOCKET][socket.SO_BROADCAST] = 1
@@ -47,8 +48,7 @@ def main(args):
 #===============================================================================
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_port", type=int)
-    parser.add_argument("logger_port", type=int)
+    parser.add_argument("broadcast_addr", type=str)
     parser.add_argument("id", type=int)
     parser.add_argument("-p", "--period", type=float, default=5)
     return parser.parse_args()

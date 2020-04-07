@@ -15,14 +15,14 @@ import udp
 
 #===============================================================================
 def main(args):
-    host_octets = (127, 0, 0, 2+args.id)
-    host = ".".join([str(octet) for octet in host_octets])
+    host = ""
     sockopts = dict()
     sockopts[socket.SOL_SOCKET] = dict()
     sockopts[socket.SOL_SOCKET][socket.SO_BROADCAST] = 1
     client, client_addr = udp.get_client(addr=(host, args.data_port),
                                          sockopts=sockopts)
-    sink_addr = ("127.0.0.1", args.sink_port)
+    sink_addr = args.sink_addr.split(":")
+    sink_addr = sink_addr[0], int(sink_addr[1])
     if not client:
         sys.exit(1)
     try:
@@ -49,7 +49,7 @@ def main(args):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("data_port", type=int)
-    parser.add_argument("sink_port", type=int)
+    parser.add_argument("sink_addr", type=str)
     parser.add_argument("id", type=int)
     return parser.parse_args()
 
