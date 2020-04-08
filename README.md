@@ -24,7 +24,7 @@ $ sudo ip netns exec <HOST> ip addr show
 ### To Run:
 
 ```
-$ sudo ./example.py setup CLIENT_PORT SINK_PORT [-s NUM_SERVERS] [-c NUM_CLIENTS] [-n NETWORK] [-p PERIOD]
+$ sudo ./example.py run CLIENT_PORT SINK_PORT [-s NUM_SERVERS] [-c NUM_CLIENTS] [-n NETWORK] [-p PERIOD]
 ```
 
 `NETWORK` is an IPv4 address with 0 as the last octet. It defaults to `192.168.10.0`.
