@@ -21,6 +21,18 @@ $ ip netns
 $ sudo ip netns exec <HOST> ip addr show
 ```
 
+`HOST` in the above command would be any of the outputs from `ip netns`. For example
+
+```
+$ ip netns
+...
+py_vhost5 (id: 3)
+...
+
+$ sudo ip netns exec py_vhost5 ip addr show
+...
+```
+
 ### To Run:
 
 ```
