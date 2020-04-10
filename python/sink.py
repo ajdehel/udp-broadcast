@@ -28,8 +28,8 @@ def main(args):
             msgs = msg.strip(";;;;").split(";;;;")
             print(LINE)
             print("\n".join(msgs))
-            print(f"Sink msg #{i_msg}")
-            print(f"Sink 0.0.0.0:{sink_addr[1]}" +\
+            print(f"py3 Sink msg #{i_msg}")
+            print(f"py3 Sink 0:{sink_addr[1]}" +\
                   f" <= {from_addr[0]}:{from_addr[1]}")
         print(LINE)
     except KeyboardInterrupt:

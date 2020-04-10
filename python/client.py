@@ -31,10 +31,10 @@ def main(args):
             i_msg += 1
             rx_data, from_addr = udp.recv_msg(client)
             print(f"Msg {i_msg:3} received")
-            msg    = f"Client[{args.id}] msg #{i_msg};;;;"
-            rx_msg = f"Client[{args.id}] {client_addr[0]}:{client_addr[1]}" +\
+            msg    = f"py3 Client[{args.id}] msg #{i_msg};;;;"
+            rx_msg = f"py3 Client[{args.id}] {client_addr[0]}:{client_addr[1]}" +\
                      f" <= {from_addr[0]}:{from_addr[1]};;;;"
-            tx_msg = f"Client[{args.id}] {client_addr[0]}:{client_addr[1]}" +\
+            tx_msg = f"py3 Client[{args.id}] {client_addr[0]}:{client_addr[1]}" +\
                      f" => {sink_addr[0]}:{sink_addr[1]};;;;"
             udp.send_msg(client, sink_addr, rx_data, msg, rx_msg, tx_msg)
     except KeyboardInterrupt:

@@ -32,8 +32,8 @@ def main(args):
             sendtime = args.period * random.random()
             waittime = args.period - sendtime
             time.sleep(sendtime)
-            msg    = f"Server[{args.id}] msg #{i_msg};;;;"
-            tx_msg = f"Server[{args.id}] 0.0.0.0:0" +\
+            msg    = f"py3 Server[{args.id}] msg #{i_msg};;;;"
+            tx_msg = f"py3 Server[{args.id}] 0:0" +\
                      f" => {broadcast_addr[0]}:{broadcast_addr[1]};;;;"
             if not udp.send_msg(server, broadcast_addr, msg, tx_msg):
                 break
