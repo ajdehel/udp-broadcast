@@ -111,6 +111,15 @@ def run(args):
     def ip_netns_exec(namespace, command, **kwargs):
         ip_netns_cmd = f"ip netns exec {namespace} {command}"
         return utils.start_process(ip_netns_cmd, echo=True, **kwargs)
+    server_dict = dict()
+    server_dict["python"] = "./python/server.py"
+    server_dict["c++"]    = "./cpp/bin/server"
+    client_dict = dict()
+    client_dict["python"] = "./python/client.py"
+    client_dict["c++"]    = "./cpp/bin/client"
+    sink_dict   = dict()
+    sink_dict["python"]   = "./python/sink.py"
+    sink_dict["c++"]      = "./cpp/bin/sink"
     network_ip = IPv4Addr(args.network)
     bc_ip     = IPv4Addr(args.network)
     bc_ip[-1] = 255
@@ -119,14 +128,17 @@ def run(args):
     sink_ip[-1] = 2
     sink_addr   = f"{sink_ip}:{args.sink_port}"
     if_prefix = args.if_prefix
+    sink_exe   = sink_dict[args.implementation]
+    client_exe = client_dict[args.implementation]
+    server_exe = server_dict[args.implementation]
     sink    =   ip_netns_exec(f"{if_prefix}vhost2",
-                    f"./sink.py {args.sink_port}", stdout=None, stderr=None)
+                    f"{sink_exe} {args.sink_port}", stdout=None, stderr=None)
     clients = [ ip_netns_exec(f"{if_prefix}vhost{3+i_}",
-                    f"./client.py {args.broadcast_port} {sink_addr} {i_}",
+                    f"{client_exe} {args.broadcast_port} {sink_addr} {i_}",
                     logfilename=f"client.{i_}.out" if args.logging else None)
                 for i_ in range(args.num_clients) ]
     servers = [ ip_netns_exec(f"{if_prefix}vhost{3+i_}",
-                    f"./server.py {bc_addr} {i_} -p {args.period}",
+                    f"{server_exe} {bc_addr} {i_} -p {args.period}",
                     logfilename=f"server.{i_}.out" if args.logging else None)
                 for i_ in range(args.num_servers) ]
     try:
@@ -168,6 +180,9 @@ def parse_args():
                    help="Port messages are broadcast to")
     r.add_argument("sink_port", type=int,
                    help="Port that clients send messages to")
+    r.add_argument("-i", "--implementation", type=str,
+                   dest="implementation", default="python",
+                   choices=("python", "c++", "ada") )
     r.add_argument("-n", "--network", type=str,
                    dest="network", default=DEFAULT_NETWORK,
                    help="IP addr in the form X.Y.Z.0" )
