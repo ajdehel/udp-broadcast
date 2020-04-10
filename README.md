@@ -36,8 +36,10 @@ $ sudo ip netns exec py_vhost5 ip addr show
 ### To Run:
 
 ```
-$ sudo ./example.py run CLIENT_PORT SINK_PORT [-s NUM_SERVERS] [-c NUM_CLIENTS] [-n NETWORK] [-p PERIOD]
+$ sudo ./example.py run CLIENT_PORT SINK_PORT [-i IMPLEMENTATION] [-s NUM_SERVERS] [-c NUM_CLIENTS] [-n NETWORK] [-p PERIOD]
 ```
+
+`IMPLEMENTATION` is one of \<c++|python\>. It allows you to choose the implementation of the server, client and sink programs.
 
 `NETWORK` is an IPv4 address with 0 as the last octet. It defaults to `192.168.10.0`.
 
