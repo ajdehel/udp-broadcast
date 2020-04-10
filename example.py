@@ -9,6 +9,7 @@ import sys
 
 #===============================================================================
 
+sys.path.append("./python")
 from  utils import IPv4Addr
 import utils
 
