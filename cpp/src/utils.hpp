@@ -14,4 +14,5 @@ inline unsigned float_to_useconds(float seconds)
   std::chrono::microseconds   useconds;
   f_seconds = std::chrono::duration<float>(seconds);
   useconds = std::chrono::duration_cast<std::chrono::microseconds>(f_seconds);
+  return useconds.count();
 }
