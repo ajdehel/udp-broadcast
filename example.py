@@ -21,13 +21,6 @@ DEFAULT_NETWORK = "192.168.10.0"
 #===============================================================================
 def setup(args):
     """Run a series of commands to set up network interfaces."""
-    def command_and_status(command, fill=70, print_success=False):
-        returncode = utils.complete_command(command, echo=False)
-        if returncode != 0 or print_success:
-            command_str = f"`{command}`"
-            status_str  =  "SUCCESS" if returncode == 0 else "FAILURE"
-            print(f"{command_str:.<70}{status_str}")
-        return returncode == 0
     bridge_if = f"{args.if_prefix}br1"
     host_ip = IPv4Addr(args.network)
     total_interfaces = 1 + 1 + args.max_clients
@@ -38,7 +31,8 @@ def setup(args):
         f"ip link add name {bridge_if} type bridge",
         f"ip link set {bridge_if} up",
         f"ip addr add {host_ip} brd + dev {bridge_if}" )
-    br_statuses = [ command_and_status(command, fill=70, print_success=False)
+    br_statuses = [ utils.command_and_status(command,
+                                             fill=70, print_success=False)
                     for command in bridge_commands ]
     ns_statuses = list()
     # Set up virtual host interface
@@ -56,7 +50,9 @@ def setup(args):
             f"ip link set {veth_peer} up",
             f"ip netns exec {namespace} ip link set {veth} up",
             f"ip link set {veth_peer} master {bridge_if}")
-        cmd_statuses = [ command_and_status(command, fill=70, print_success=False)
+        cmd_statuses = [ utils.command_and_status(command,
+                                                  fill=70,
+                                                  print_success=False)
                         for command in namespace_commands ]
         ns_statuses.append(all(cmd_statuses))
     if all(br_statuses) and all(ns_statuses):
@@ -77,31 +73,44 @@ def teardown(args):
             commands = (
                 f"ip link set {bridge_if} down",
                 f"ip link del {bridge_if}" )
-            for command in commands:
-                command_str = f"`{command}`"
-                print(f"{command_str:.<30}", end='')
-                returncode = utils.complete_command(command, echo=False)
-                status = "SUCCESS" if returncode == 0 else "FAILURE"
-                print(status)
+            cmd_statuses = [ utils.command_and_status(command,
+                                                      fill=70,
+                                                      print_success=False)
+                             for command in commands ]
+            if all(cmd_statuses):
+                print(f"Tore down '{bridge_if}'.")
         else:
             print(f"Did not find '{bridge_if}'.")
-    def teardown_namespace(if_prefix):
+    def teardown_veth_interfaces(if_prefix):
+        veth_if_prefix = f"{if_prefix}br-veth"
+        stdout = utils.output_command(f"ip link show", echo=False)[0]
+        matches = re.findall(f"({veth_if_prefix}\d+)", stdout)
+        commands = [ f"ip link del {veth_peer}" for veth_peer in matches ]
+        cmd_statuses = [ utils.command_and_status(command,
+                                                  fill=70,
+                                                  print_success=False)
+                         for command in commands ]
+        if len(cmd_statuses) == 0:
+            print(f"Did not find '{veth_if_prefix}*' interfaces")
+        elif all(cmd_statuses):
+            print(f"Tore down all '{veth_if_prefix}*' interfaces")
+    def teardown_namespaces(if_prefix):
+        namespace_prefix = f"{if_prefix}vhost"
         stdout = utils.output_command(f"ip netns")[0]
-        matches = re.findall(f"{if_prefix}vhost[0-9]+", stdout)
-        if matches:
-            for namespace in matches:
-                command = f"ip netns del {namespace}"
-                command_str = f"`{command}`"
-                print(f"{command_str:.<30}", end='')
-                returncode = utils.complete_command(command, echo=False)
-                status = "SUCCESS" if returncode == 0 else "FAILURE"
-                print(status)
-        else:
-            print(f"Did not find namespaces matching '{if_prefix}vhost*'.")
+        matches = re.findall(f"({namespace_prefix}\d+)", stdout)
+        commands = [ f"ip netns del {namespace}" for namespace in matches ]
+        cmd_statuses = [ utils.command_and_status(command,
+                                                  fill=70,
+                                                  print_success=False)
+                         for command in commands ]
+        if len(cmd_statuses) == 0:
+            print(f"Did not find '{namespace_prefix}*' namespaces")
+        elif all(cmd_statuses):
+            print(f"Deleted all '{namespace_prefix}*' namespaces")
     if_prefix = args.if_prefix
     teardown_bridge(if_prefix)
-    print()
-    teardown_namespace(if_prefix)
+    teardown_veth_interfaces(if_prefix)
+    teardown_namespaces(if_prefix)
 
 ################################################################################
 
