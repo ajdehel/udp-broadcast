@@ -48,6 +48,15 @@ def output_command(command, echo=False):
     returncode = process.wait()
     return process.communicate()
 
+#===============================================================================
+def command_and_status(command, fill=70, print_success=False):
+    returncode = complete_command(command, echo=False)
+    if returncode != 0 or print_success:
+        command_str = f"`{command}`"
+        status_str  =  "SUCCESS" if returncode == 0 else "FAILURE"
+        print(f"{command_str:.<70}{status_str}")
+    return returncode == 0
+
 #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 
 #===============================================================================
