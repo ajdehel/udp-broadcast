@@ -42,17 +42,17 @@ begin
   Put_Line("Broadcast Port: " & Trim(args.broadcast_port'Image, Ada.Strings.Left));
   Put_Line("Period:         " & Trim(args.period'Image, Ada.Strings.Left));
   sockfd := UDP.get_broadcast_socket;
-  if Integer(sockfd) < 0 then
-    Put_Line("Error: Could not bind to socket.");
+  if sockfd < 0 then
+    Put_Line("Error: Could not acquire socket.");
     return;
   end if;
   loop
     msgs_num := msgs_num + 1;
     declare
       msg: string :=
-        "ada Server["& Trim(args.instance_id'Image, Ada.Strings.Left) &"] "
+        "Ada Server["& Trim(args.instance_id'Image, Ada.Strings.Left) &"] "
         & "msg #"& Trim(msgs_num'Image, Ada.Strings.Left) &";;;;"
-        & "ada Server["& Trim(args.instance_id'Image, Ada.Strings.Left) &"] 0:0"
+        & "Ada Server["& Trim(args.instance_id'Image, Ada.Strings.Left) &"] 0:0"
         & " => "& Trim(args.broadcast_host, Ada.Strings.Right) &":"
         & Trim(args.broadcast_port'Image, Ada.Strings.Left) &";;;;";
       msg_len: Positive := msg'Length;
