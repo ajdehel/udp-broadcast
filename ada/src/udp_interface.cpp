@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 
+#define MAX_BUFFSIZE 4096
+
 extern "C"
 int get_socket( void )
 {
@@ -60,7 +62,8 @@ int recv_msg( int sockfd, char *msg, unsigned *msg_len, char *ip_host, unsigned 
   struct sockaddr_in recv_addr = {};
   unsigned addr_len = sizeof(recv_addr);
   unsigned bytes_recv;
-  bytes_recv = recvfrom(sockfd, msg, *msg_len, 0, (sockaddr*)&recv_addr, &addr_len);
+  bytes_recv = recvfrom(sockfd, msg, MAX_BUFFSIZE, 0, (sockaddr*)&recv_addr, &addr_len);
+  *msg_len = bytes_recv;
   std::string recv_host = std::string( inet_ntoa(recv_addr.sin_addr) );
   std::memcpy(ip_host, recv_host.c_str(), recv_host.size());
   *ip_port = ntohs(recv_addr.sin_port);

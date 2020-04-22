@@ -6,6 +6,8 @@ use Interfaces;
 
 package UDP is
 
+  INADDR_ANY: constant String := "0.0.0.0";
+
   --------------------------------------------------------------------------------
   function get_socket return Integer;
   function c_get_socket return C.int
@@ -19,11 +21,11 @@ package UDP is
   --------------------------------------------------------------------------------
   function bind_socket(sockfd:  in Integer;
                        ip_host: in String;
-                       ip_port: in Integer
+                       ip_port: in Natural
                       ) return Integer;
-  function c_bind_socket(sockfd:  in C.int;
-                         ip_host: in C.Strings.chars_ptr;
-                         ip_port: in C.unsigned_short
+  function c_bind_socket(sockfd:  in out C.int;
+                         ip_host: in out C.char_array;
+                         ip_port: in     C.unsigned_short
                         ) return C.int
       with Import => True, Convention => C, External_Name => "bind_socket";
 
@@ -35,9 +37,9 @@ package UDP is
                     msg_len: in Natural
                    ) return Integer;
   function c_send_msg(sockfd:  in     C.int;
-                      ip_host: in out C.Strings.chars_ptr;
+                      ip_host: in out C.char_array;
                       ip_port: in     C.unsigned_short;
-                      msg:     in out C.Strings.chars_ptr;
+                      msg:     in out C.char_array;
                       msg_len: in     C.unsigned
                      ) return C.int
       with Import => True, Convention => C, External_Name => "send_msg";
@@ -59,15 +61,15 @@ package UDP is
 
   --------------------------------------------------------------------------------
   function recv_msg(sockfd:  in     Integer;
-                    msg:        out String;
+                    msg:     in out String;
                     msg_len:    out Natural;
-                    ip_host:    out String;
+                    ip_host: in out String;
                     ip_port:    out Natural
                    ) return Integer;
   function c_recv_msg(sockfd:  in     C.int;
-                      msg:        out C.Strings.chars_ptr;
+                      msg:        out C.char_array;
                       msg_len:    out C.unsigned;
-                      ip_host:    out C.Strings.chars_ptr;
+                      ip_host:    out C.char_array;
                       ip_port:    out C.unsigned_short
                      ) return C.int
       with Import => True, Convention => C, External_Name => "recv_msg";

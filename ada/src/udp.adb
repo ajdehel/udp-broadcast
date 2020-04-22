@@ -22,15 +22,14 @@ package body UDP is
   --------------------------------------------------------------------------------
   function bind_socket(sockfd:  in Integer;
                        ip_host: in String;
-                       ip_port: in Integer
+                       ip_port: in Natural
                       ) return Integer is
     c_sockfd:  C.int               := C.int(sockfd);
-    c_ip_host: C.Strings.chars_ptr := C.Strings.New_String(ip_host);
+    c_ip_host: C.char_array        := C.To_C(ip_host);
     c_ip_port: C.unsigned_short    := C.unsigned_short(ip_port);
     c_return: Integer;
   begin
     c_return := Integer(c_bind_socket(c_sockfd, c_ip_host, c_ip_port));
-    C.Strings.Free(c_ip_host);
     return c_return;
   end bind_socket;
 
@@ -42,15 +41,13 @@ package body UDP is
                     msg_len: in Natural
                    ) return Integer is
     c_sockfd:  C.int               := C.int(sockfd);
-    c_ip_host: C.Strings.chars_ptr := C.Strings.New_String(ip_host);
+    c_ip_host: C.char_array        := C.To_C(ip_host);
     c_ip_port: C.unsigned_short    := C.unsigned_short(ip_port);
-    c_msg:     C.Strings.chars_ptr := C.Strings.New_String(msg);
+    c_msg:     C.char_array        := C.To_C(msg);
     c_msg_len: C.unsigned          := C.unsigned(msg_len);
     c_return: Integer;
   begin
     c_return := Integer(c_send_msg(c_sockfd, c_ip_host, c_ip_port, c_msg, c_msg_len));
-    C.Strings.Free(c_ip_host);
-    C.Strings.Free(c_msg);
     return c_return;
   end send_msg;
 
@@ -69,35 +66,31 @@ package body UDP is
     c_return: Integer;
   begin
     c_return := Integer(c_broadcast_msg(c_sockfd, c_ip_host, c_ip_port, c_msg, c_msg_len));
-    --C.Strings.Free(c_ip_host);
-    --C.Strings.Free(c_msg);
     return c_return;
   end broadcast_msg;
 
   --------------------------------------------------------------------------------
   function recv_msg(sockfd:  in     Integer;
-                    msg:        out String;
+                    msg:     in out String;
                     msg_len:    out Natural;
-                    ip_host:    out String;
+                    ip_host: in out String;
                     ip_port:    out Natural
                    ) return Integer is
     tmp_msg:     String(1..4096) := (others => Character'Val(0));
-    tmp_ip_host: String(1..15)   := (others => Character'Val(0));
-    c_sockfd:  C.int               := C.int(sockfd);
-    c_msg:     C.Strings.chars_ptr := C.Strings.New_String(tmp_msg);
+    tmp_ip_host: String(1..16)   := (others => Character'Val(0));
+    c_sockfd:  C.int             := C.int(sockfd);
+    c_msg:     C.char_array      := C.To_C(tmp_msg);
     c_msg_len: C.unsigned;
-    c_ip_host: C.Strings.chars_ptr := C.Strings.New_String(tmp_ip_host);
+    c_ip_host: C.char_array      := C.To_C(tmp_ip_host);
     c_ip_port: C.unsigned_short;
     c_return: Integer;
   begin
-    c_return := Integer(c_recv_msg(c_sockfd, c_msg, c_msg_len, c_ip_host, c_ip_port));
-    msg     := C.Strings.Value(c_msg);
-    msg_len := Natural(c_msg_len);
-    ip_host := C.Strings.Value(c_ip_host);
+    c_return    := Integer(c_recv_msg(c_sockfd, c_msg, c_msg_len, c_ip_host, c_ip_port));
+    msg_len     := Natural(c_msg_len);
+    move(C.To_Ada(c_msg), msg);
+    move(C.To_Ada(c_ip_host), ip_host);
     ip_port := Natural(c_ip_port);
-    C.Strings.Free(c_ip_host);
-    C.Strings.Free(c_msg);
-    return c_return;
+    return Integer(c_return);
   end recv_msg;
 
   --------------------------------------------------------------------------------
