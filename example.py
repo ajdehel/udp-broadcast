@@ -131,7 +131,7 @@ def run(args):
     sink_dict   = dict()
     sink_dict["python"]   = "./python/sink.py"
     sink_dict["c++"]      = "./cpp/bin/sink"
-    sink_dict["ada"]      = "./cpp/bin/sink"
+    sink_dict["ada"]      = "./ada/bin/sink_ada"
     network_ip = IPv4Addr(args.network)
     bc_ip     = IPv4Addr(args.network)
     bc_ip[-1] = 255
