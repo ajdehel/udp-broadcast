@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Create and spawn subprocesses to demonstrate a working UDP Broadcast Scenario
+over a virtual network created using iproute2 commands.
+"""
 
 ################################################################################
 
@@ -21,7 +25,9 @@ DEFAULT_NETWORK = "192.168.10.0"
 
 #===============================================================================
 def setup(args):
-    """Run a series of commands to set up network interfaces."""
+    """
+    Run a series of commands to set up network interfaces.
+    """
     bridge_if = f"{args.if_prefix}br1"
     host_ip = IPv4Addr(args.network)
     total_interfaces = 1 + 1 + args.max_clients
@@ -64,6 +70,9 @@ def setup(args):
 
 #===============================================================================
 def teardown(args):
+    """
+    Run a series of commands to tear down the virtual environment from setup.
+    """
     def teardown_bridge(if_prefix):
         # check and get bridge name
         bridge_if = f"{if_prefix}br1"
@@ -117,6 +126,9 @@ def teardown(args):
 
 #===============================================================================
 def run(args):
+    """
+    Run the server-client-sink example on a supplied implementation.
+    """
     def ip_netns_exec(namespace, command, **kwargs):
         ip_netns_cmd = f"ip netns exec {namespace} {command}"
         return utils.start_process(ip_netns_cmd, echo=True, **kwargs)
@@ -168,6 +180,9 @@ def run(args):
 
 #===============================================================================
 def main(args):
+    """
+    Check for root privileges, and call functions specified by subcommand.
+    """
     if not utils.has_root_privileges():
         print("Root privileges required")
         sys.exit(errno.EPERM)
@@ -178,6 +193,9 @@ def main(args):
 DEFAULT_PREFIX = "py_"
 
 def parse_args():
+    """
+    Create parser and run command line arguments through it.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--logging", action='store_true', dest="logging")
     parser.add_argument("-p", "--if-prefix", type=str,
