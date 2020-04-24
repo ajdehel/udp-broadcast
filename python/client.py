@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Simple client example that receives broadcast messages and sends another
+message along to a single receiver.
+"""
 
 ################################################################################
 
@@ -15,6 +19,9 @@ import udp
 
 #===============================================================================
 def main(args):
+    """
+    Bind to a socket to receive msgs and send one for each message received.
+    """
     host = ""
     sockopts = dict()
     sockopts[socket.SOL_SOCKET] = dict()
@@ -47,10 +54,16 @@ def main(args):
 
 #===============================================================================
 def parse_args():
+    """
+    Create parser and run command line arguments through it.
+    """
     parser = argparse.ArgumentParser()
-    parser.add_argument("data_port", type=int)
-    parser.add_argument("sink_addr", type=str)
-    parser.add_argument("id", type=int)
+    parser.add_argument("data_port", type=int,
+                        help="Listen for broadcasts on this port.")
+    parser.add_argument("sink_addr", type=str,
+                        help="IP Addr in the form <IPv4_Address>:<Port>.")
+    parser.add_argument("id", type=int,
+                        help="Id for the instance.")
     return parser.parse_args()
 
 ################################################################################

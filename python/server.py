@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""
+Simple server example that broadcasts messages over UDP on a specified port,
+during a given time interval.
+"""
 
 ################################################################################
 
@@ -16,6 +20,9 @@ import udp
 
 #===============================================================================
 def main(args):
+    """
+    Broadcast UDP message once every <args.period> second(s).
+    """
     random.seed(args.id)
     broadcast_addr = args.broadcast_addr.split(":")
     broadcast_addr = broadcast_addr[0], int(broadcast_addr[1])
@@ -47,6 +54,9 @@ def main(args):
 
 #===============================================================================
 def parse_args():
+    """
+    Create parser and run command line arguments through it.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("broadcast_addr", type=str)
     parser.add_argument("id", type=int)

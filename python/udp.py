@@ -1,3 +1,6 @@
+"""
+Module to simplify some UDP functions.
+"""
 
 import argparse
 import socket
@@ -8,6 +11,14 @@ import time
 
 #===============================================================================
 def get_socket(addr=None, sockopts=dict()):
+    """
+    Return a socket with sockopts applied to it.
+    addr: tuple with (IPv4_Address, Port)
+    sockops: is a 2-level dictionary of the form
+        sockopts[<protocol>][<sockopt>] = <value>
+        where each part used as such:
+            setsockopt(protocol, sockopt, value)
+    """
     try:
         sock = socket.socket(family=socket.AF_INET,
                              type=socket.SOCK_DGRAM,
@@ -25,16 +36,35 @@ def get_socket(addr=None, sockopts=dict()):
 
 #===============================================================================
 def get_server(addr=None, sockopts=dict()):
+    """
+    Return a socket with sockopts applied to it.
+    addr: tuple with (IPv4_Address, Port)
+    sockops: is a 2-level dictionary of the form
+        sockopts[<protocol>][<sockopt>] = <value>
+        where each part used as such:
+            setsockopt(protocol, sockopt, value)
+    """
     server, server_addr = get_socket(addr=addr, sockopts=sockopts)
     return server, server_addr
 
 #===============================================================================
 def get_client(addr=None, sockopts=dict()):
+    """
+    Return a socket with sockopts applied to it.
+    addr: tuple with (IPv4_Address, Port)
+    sockops: is a 2-level dictionary of the form
+        sockopts[<protocol>][<sockopt>] = <value>
+        where each part used as such:
+            setsockopt(protocol, sockopt, value)
+    """
     client, client_addr = get_socket(addr=addr, sockopts=sockopts)
     return client, client_addr
 
 #===============================================================================
 def send_msg(sock, addr, *msgs):
+    """
+    Send all msgs to addr via the provided socket.
+    """
     buf = bytearray()
     for msg in msgs:
         msg = msg if isinstance(msg, bytes) else bytes(msg, encoding="UTF-8")
@@ -52,6 +82,9 @@ def send_msg(sock, addr, *msgs):
 
 #===============================================================================
 def recv_msg(sock, encoding=None):
+    """
+    Wait on a message from the socket.
+    """
     try:
         rx_data, from_addr = sock.recvfrom(4096)
         msg = str(rx_data, encoding=encoding) if encoding else rx_data
@@ -63,6 +96,9 @@ def recv_msg(sock, encoding=None):
 
 #===============================================================================
 def close_socket(sock):
+    """
+    Close the socket.
+    """
     try:
         sock.close()
         is_closed = True
