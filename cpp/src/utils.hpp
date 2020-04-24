@@ -1,6 +1,16 @@
 #include <chrono>
 #include <random>
 
+/**************************************************************************************************/
+template<class InType, class OutType>
+inline void parse( const InType &arg_in, OutType &value )
+{
+  std::stringstream stream;
+  stream << arg_in;
+  stream >> value;
+}
+
+/**************************************************************************************************/
 inline float random_float()
 {
   std::default_random_engine generator;
@@ -8,6 +18,7 @@ inline float random_float()
   return distribution(generator);
 }
 
+/**************************************************************************************************/
 inline unsigned float_to_useconds(float seconds)
 {
   std::chrono::duration<float> f_seconds;

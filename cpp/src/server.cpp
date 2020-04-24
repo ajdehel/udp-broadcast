@@ -1,4 +1,3 @@
-/**************************************************************************************************/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -14,7 +13,10 @@
 
 #include "utils.hpp"
 
-/**************************************************************************************************/
+
+/***************************************************************************************************
+ * Arguments for program
+ **************************************************************************************************/
 
 struct Arguments
 {
@@ -24,13 +26,28 @@ struct Arguments
   float       period;
 };
 
+
+/***************************************************************************************************
+ * Function Declarations
+ **************************************************************************************************/
+
 int parse_args( int argc, char *argv[], Arguments *parsed_args );
+void print_usage( void );
 void signal_handler( int signum );
 
-/**************************************************************************************************/
+
+/***************************************************************************************************
+ * Constants
+ **************************************************************************************************/
 
 bool STOP = false;
 
+
+/***************************************************************************************************
+ * Function Definitions
+ **************************************************************************************************/
+
+/**************************************************************************************************/
 int main(int argc, char *argv[])
 {
   signal(SIGINT, signal_handler);
@@ -90,12 +107,33 @@ void signal_handler( int signum )
 }
 
 /**************************************************************************************************/
-template<class InType, class OutType>
-void parse( const InType &arg_in, OutType &value );
+void print_usage( void )
+{
+  std::cout << std::endl;
+  std::cout << " USAGE:" << std::endl;
+  std::cout << " $ server [-p <PERIOD>] <IP_ADDRESS> <INSTANCE_ID>" << std::endl;
+  std::cout << std::endl;
+  std::cout << " Positional Arguments:" << std::endl;
+  std::cout << "   <IP_ADDRESS> is of the form <IPv4_Address>:<Port_Number>." << std::endl;
+  std::cout << "   <INSTANCE_ID> is an int value to identify this server process." << std::endl;
+  std::cout << std::endl;
+  std::cout << " Optional Arguments:" << std::endl;
+  std::cout << "   -p, --period <PERIOD>" << std::endl;
+  std::cout << "     <PERIOD> number of seconds during which a message will send." << std::endl;
+  std::cout << std::endl;
+}
+
+/**************************************************************************************************/
 int parse_args( int argc, char *argv[], Arguments *parsed_args )
 {
   std::string       arg;
   unsigned num_args_parsed = 0;
+  if ( argc-1 < 2 )
+  {
+    std::cerr << "***Error: Encountered too few arguments." << std::endl;
+    print_usage();
+    exit(1);
+  }
   for (unsigned i_arg = 1; i_arg < argc; )
   {
     arg = std::string(argv[i_arg]);
@@ -125,18 +163,10 @@ int parse_args( int argc, char *argv[], Arguments *parsed_args )
     // Invalid Arg
     else
     {
-      std::cerr << "Encountered unexpected argument." << std::endl;
+      std::cerr << "***Error: Encountered unexpected argument." << std::endl;
+      print_usage();
       exit(1);
     }
   }
   return 0;
-}
-
-/**************************************************************************************************/
-template<class InType, class OutType>
-void parse( const InType &arg_in, OutType &value )
-{
-  std::stringstream stream;
-  stream << arg_in;
-  stream >> value;
 }

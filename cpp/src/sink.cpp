@@ -1,4 +1,3 @@
-/**************************************************************************************************/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -30,9 +29,8 @@ struct Arguments
 
 int main( int argc, char *argv[] );
 int parse_args( int argc, char *argv[], Arguments *parsed_args );
+void print_usage( void );
 void signal_handler( int signum );
-template<class InType, class OutType>
-void parse( const InType &arg_in, OutType &value );
 
 
 /***************************************************************************************************
@@ -108,10 +106,28 @@ void signal_handler( int signum )
 }
 
 /**************************************************************************************************/
+void print_usage( void )
+{
+  std::cout << std::endl;
+  std::cout << " USAGE:" << std::endl;
+  std::cout << " $ sink <PORT>" << std::endl;
+  std::cout << std::endl;
+  std::cout << " Positional Arguments:" << std::endl;
+  std::cout << "   <PORT> is the port number for the sink to bind to." << std::endl;
+  std::cout << std::endl;
+}
+
+/**************************************************************************************************/
 int parse_args( int argc, char *argv[], Arguments *parsed_args )
 {
   std::string       arg;
   unsigned num_args_parsed = 0;
+  if ( argc-1 < 1 )
+  {
+    std::cerr << "***Error: Encountered too few arguments." << std::endl;
+    print_usage();
+    exit(1);
+  }
   for (unsigned i_arg = 1; i_arg < argc; )
   {
     arg = std::string(argv[i_arg]);
@@ -122,17 +138,13 @@ int parse_args( int argc, char *argv[], Arguments *parsed_args )
       num_args_parsed++;
       i_arg += 1;
     }
+    else
+    {
+      std::cerr << "***Error: Encountered unexpected argument." << std::endl;
+      print_usage();
+      exit(1);
+    }
   }
   return 0;
 }
-
-/**************************************************************************************************/
-template<class InType, class OutType>
-void parse( const InType &arg_in, OutType &value )
-{
-  std::stringstream stream;
-  stream << arg_in;
-  stream >> value;
-}
-
 
