@@ -5,12 +5,16 @@
 
 #define MAX_BUFFSIZE 4096
 
+
+/**************************************************************************************************/
 extern "C"
 int get_socket( void )
 {
   return socket(AF_INET, SOCK_DGRAM, 0);
 }
 
+
+/**************************************************************************************************/
 extern "C"
 int get_broadcast_socket( void )
 {
@@ -25,6 +29,8 @@ int get_broadcast_socket( void )
   return status;
 }
 
+
+/**************************************************************************************************/
 extern "C"
 int bind_socket( int *sockfd, char *ip_host, short ip_port )
 {
@@ -36,6 +42,8 @@ int bind_socket( int *sockfd, char *ip_host, short ip_port )
   return bind(*sockfd,(sockaddr*)&bind_addr, sizeof(bind_addr));
 }
 
+
+/**************************************************************************************************/
 extern "C"
 int send_msg( int sockfd, char *ip_host, short ip_port, char *msg, unsigned msg_len )
 {
@@ -46,6 +54,8 @@ int send_msg( int sockfd, char *ip_host, short ip_port, char *msg, unsigned msg_
   return sendto(sockfd, msg, msg_len, 0, (sockaddr*)&send_addr, sizeof(send_addr));
 }
 
+
+/**************************************************************************************************/
 extern "C"
 int broadcast_msg( int sockfd, char *ip_host, unsigned short ip_port, char *msg, unsigned msg_len )
 {
@@ -56,6 +66,8 @@ int broadcast_msg( int sockfd, char *ip_host, unsigned short ip_port, char *msg,
   return sendto(sockfd, msg, msg_len, 0, (sockaddr*)&broadcast_addr, sizeof(broadcast_addr));
 }
 
+
+/**************************************************************************************************/
 extern "C"
 int recv_msg( int sockfd, char *msg, unsigned *msg_len, char *ip_host, unsigned short *ip_port )
 {
@@ -69,4 +81,5 @@ int recv_msg( int sockfd, char *msg, unsigned *msg_len, char *ip_host, unsigned 
   *ip_port = ntohs(recv_addr.sin_port);
   return bytes_recv;
 }
+
 
