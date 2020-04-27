@@ -1,3 +1,9 @@
+------------------------------------------------------------------------------------------
+--
+--  Purpose: Demonstrate a simple UDP broadcast server
+--
+------------------------------------------------------------------------------------------
+
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Strings;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -8,7 +14,8 @@ with UDP;
 
 procedure Server_Ada is
   use GNAT.Command_line;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   type Arguments is
     record
       broadcast_host: String(1..16) := (others => Character'Val(0));
@@ -16,7 +23,8 @@ procedure Server_Ada is
       instance_id:    Natural;
       period:         Float;
     end record;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   function Parse_Args return Arguments is
     parsed_args: Arguments;
   begin
@@ -32,20 +40,24 @@ procedure Server_Ada is
     parsed_args.instance_id := Natural'Value(Get_Argument);
     return parsed_args;
   end Parse_Args;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   args:     Arguments := Parse_Args;
   sockfd:   Integer := 0;
   msgs_num: Natural := 0;
+
 begin
   Put_Line("Instance:       " & Trim(args.instance_id'Image, Ada.Strings.Left));
   Put_Line("Broadcast Host: " & Trim(args.broadcast_host, Ada.Strings.Left));
   Put_Line("Broadcast Port: " & Trim(args.broadcast_port'Image, Ada.Strings.Left));
   Put_Line("Period:         " & Trim(args.period'Image, Ada.Strings.Left));
   sockfd := UDP.get_broadcast_socket;
+
   if sockfd < 0 then
     Put_Line("Error: Could not acquire socket.");
     return;
   end if;
+
   loop
     msgs_num := msgs_num + 1;
     declare
@@ -72,4 +84,5 @@ begin
 
     end;
   end loop;
+
 end Server_Ada;

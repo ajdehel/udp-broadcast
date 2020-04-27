@@ -1,3 +1,9 @@
+------------------------------------------------------------------------------------------
+--
+--  Purpose: Demonstrate a simple UDP broadcast client that additionally sends messages
+--
+------------------------------------------------------------------------------------------
+
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Strings;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -9,7 +15,8 @@ with UDP;
 
 procedure Client_Ada is
   use GNAT.Command_line;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   type Arguments is
     record
       listener_port:   Natural;
@@ -17,7 +24,8 @@ procedure Client_Ada is
       sink_port:   Natural;
       instance_id: Natural;
     end record;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   function Parse_Args return Arguments is
     parsed_args: Arguments;
   begin
@@ -26,24 +34,29 @@ procedure Client_Ada is
     parsed_args.instance_id := Natural'Value(Get_Argument);
     return parsed_args;
   end Parse_Args;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   args:     Arguments := Parse_Args;
   sockfd:   Integer := 0;
   msgs_num: Natural := 0;
+
 begin
   Put_Line("Instance:  " & Trim(args.instance_id'Image, Ada.Strings.Left));
   Put_Line("Data Port: " & Trim(args.listener_port'Image, Ada.Strings.Left));
   Put_Line("Sink Host: " & Trim(args.sink_host, Ada.Strings.Left));
   Put_Line("Sink Port: " & Trim(args.sink_port'Image, Ada.Strings.Left));
   sockfd := UDP.get_broadcast_socket;
+
   if sockfd < 0 then
     Put_Line("Error: Could not acquire socket.");
     return;
   end if;
+
   if UDP.bind_socket(sockfd, UDP.INADDR_ANY, args.listener_port) < 0 then
     Put_Line("Error: Could not bind to socket.");
     return;
   end if;
+
   loop
     declare
       buffer:     Unbounded_String;

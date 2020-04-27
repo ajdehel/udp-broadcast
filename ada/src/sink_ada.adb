@@ -1,3 +1,9 @@
+------------------------------------------------------------------------------------------
+--
+--  Purpose: Demonstrate a simple sink for UDP messages
+--
+------------------------------------------------------------------------------------------
+
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Strings;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
@@ -9,19 +15,22 @@ with UDP;
 
 procedure Sink_Ada is
   use GNAT.Command_line;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   type Arguments is
     record
       port:   Natural;
     end record;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   function Parse_Args return Arguments is
     parsed_args: Arguments;
   begin
     parsed_args.port := Natural'Value(Get_Argument);
     return parsed_args;
   end Parse_Args;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   procedure Print_Msg(msg: in String) is
     substr_begin: Integer := msg'First;
     substr_end:   Integer := msg'First;
@@ -33,21 +42,26 @@ procedure Sink_Ada is
       substr_begin := substr_end + search_pattern'Length;
     end loop;
   end Print_Msg;
-  -----------------------------------------------------
+
+  ------------------------------------------------------------
   args:     Arguments := Parse_Args;
   sockfd:   Integer := 0;
   msgs_num: Natural := 0;
+
 begin
   Put_Line("Data Port: " & Trim(args.port'Image, Ada.Strings.Left));
   sockfd := UDP.get_socket;
+
   if sockfd < 0 then
     Put_Line("Error: Could not acquire socket.");
     return;
   end if;
+
   if UDP.bind_socket(sockfd, UDP.INADDR_ANY, args.port) < 0 then
     Put_Line("Error: Could not bind to socket.");
     return;
   end if;
+
   loop
     declare
       buffer:     Unbounded_String;
