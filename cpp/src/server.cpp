@@ -1,3 +1,14 @@
+/***************************************************************************************************
+ *
+ *  Purpose: Demonstrate a simple UDP broadcast server
+ *
+ *  Components:
+ *    main()
+ *    signal_handler()
+ *    parse_args()
+ *    print_usage()
+ *
+ **************************************************************************************************/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -31,6 +42,7 @@ struct Arguments
  * Function Declarations
  **************************************************************************************************/
 
+int main( int argc, char *argv[] );
 int parse_args( int argc, char *argv[], Arguments *parsed_args );
 void print_usage( void );
 void signal_handler( int signum );

@@ -1,3 +1,14 @@
+/***************************************************************************************************
+ *
+ *  Purpose: Demonstrate a simple UDP broadcast client that additionally sends messages
+ *
+ *  Components:
+ *    main()
+ *    signal_handler()
+ *    parse_args()
+ *    print_usage()
+ *
+ **************************************************************************************************/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>

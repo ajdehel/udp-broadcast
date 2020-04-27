@@ -1,3 +1,14 @@
+/***************************************************************************************************
+ *
+ *  Purpose: Demonstrate a simple sink for UDP messages
+ *
+ *  Components:
+ *    main()
+ *    signal_handler()
+ *    parse_args()
+ *    print_usage()
+ *
+ **************************************************************************************************/
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
