@@ -69,6 +69,13 @@ int main(int argc, char *argv[])
     std::cerr << "Could not set socket to broadcast mode." << std::endl;
     exit(1);
   }
+  timeval timeout = {};
+  timeout.tv_sec  = 1;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+  {
+    std::cerr << "Could not set receive timeout for socket." << std::endl;
+    exit(1);
+  }
   // Bind listener socket
   struct sockaddr_in listener_addr = {};
   listener_addr.sin_family      = AF_INET;
@@ -93,8 +100,11 @@ int main(int argc, char *argv[])
     std::stringstream msg_stream;
     struct sockaddr_in recv_addr = {};
     unsigned addr_len = sizeof(recv_addr);
-    unsigned bytes_recv;
-    bytes_recv = recvfrom(sockfd, buffer, BUFFSIZE, 0, (sockaddr*)&recv_addr, &addr_len);
+    if (0 > recvfrom(sockfd, buffer, BUFFSIZE, 0, (sockaddr*)&recv_addr, &addr_len))
+    {
+      continue;
+    }
+    std::cout << "Msg "<<num_msgs<<" received"<< std::endl;
     std::string recv_host = std::string( inet_ntoa(recv_addr.sin_addr) );
     uint16_t    recv_port = ntohs(recv_addr.sin_port);
     msg_stream << buffer;
@@ -105,8 +115,6 @@ int main(int argc, char *argv[])
                << " => "<<args.sink_host<<":"<<args.sink_port<<";;;;";
     std::string msg = msg_stream.str();
     sendto(sockfd, msg.c_str(), msg.length(), 0, (sockaddr*)&sink_addr, sizeof(sink_addr));
-    std::cout << "Msg "<<num_msgs<<" received"<< std::endl;
-
     num_msgs++;
   }
   // Close socket and exit

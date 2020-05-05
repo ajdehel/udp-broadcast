@@ -60,6 +60,13 @@ int main(int argc, char *argv[])
     std::cerr << "Could not create Socket.";
     exit(1);
   }
+  timeval timeout = {};
+  timeout.tv_sec  = 1;
+  if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0)
+  {
+    std::cerr << "Could not set receive timeout for socket." << std::endl;
+    exit(1);
+  }
   // Bind to listener socket
   struct sockaddr_in listener_addr = {};
   listener_addr.sin_family      = AF_INET;
@@ -78,7 +85,10 @@ int main(int argc, char *argv[])
   {
     unsigned msg_in_len;
     struct sockaddr_in recv_addr = {};
-    recvfrom(sockfd, buffer, BUFFSIZE, 0, (sockaddr*)&recv_addr, &msg_in_len);
+    if (0 > recvfrom(sockfd, buffer, BUFFSIZE, 0, (sockaddr*)&recv_addr, &msg_in_len))
+    {
+      continue;
+    }
     std::string recv_host = std::string( inet_ntoa(recv_addr.sin_addr) );
     uint16_t    recv_port = ntohs(recv_addr.sin_port);
     std::string msg = std::string(buffer);
