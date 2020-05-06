@@ -7,61 +7,30 @@ use Interfaces;
 package body UDP is
 
   --------------------------------------------------------------------------------
-  --  Imported C Functions
-  --------------------------------------------------------------------------------
-  function c_get_socket return C.int
-      with Import => True, Convention => C, External_Name => "get_socket";
-  function c_get_broadcast_socket return C.int
-      with Import => True, Convention => C, External_Name => "get_broadcast_socket";
-  function c_close_socket(sockfd: in C.int)  return C.int
-      with Import => True, Convention => C, External_Name => "close_socket";
-  function c_bind_socket(sockfd:  in out C.int;
-                         ip_host: in out C.char_array;
-                         ip_port: in     C.unsigned_short
-                        ) return C.int
-      with Import => True, Convention => C, External_Name => "bind_socket";
-  function c_send_msg(sockfd:  in     C.int;
-                      ip_host: in out C.char_array;
-                      ip_port: in     C.unsigned_short;
-                      msg:     in out C.char_array;
-                      msg_len: in     C.unsigned
-                     ) return C.int
-      with Import => True, Convention => C, External_Name => "send_msg";
-  function c_broadcast_msg(sockfd:  in     C.int;
-                           ip_host: in out C.char_array;
-                           ip_port: in     C.unsigned_short;
-                           msg:     in out C.char_array;
-                           msg_len: in     C.unsigned
-                          ) return C.int
-      with Import => True, Convention => C, External_Name => "broadcast_msg";
-  function c_recv_msg(sockfd:  in     C.int;
-                      msg:        out C.char_array;
-                      msg_len:    out C.unsigned;
-                      ip_host:    out C.char_array;
-                      ip_port:    out C.unsigned_short
-                     ) return C.int
-      with Import => True, Convention => C, External_Name => "recv_msg";
-
-
-  --------------------------------------------------------------------------------
   --  Ada-to-C Interface Functions
   --------------------------------------------------------------------------------
 
 
   --------------------------------------------------------------------------------
   function get_socket return Integer is
+    function c_get_socket return C.int
+        with Import => True, Convention => C, External_Name => "get_socket";
   begin
     return Integer(c_get_socket);
   end get_socket;
 
   --------------------------------------------------------------------------------
   function get_broadcast_socket return Integer is
+    function c_get_broadcast_socket return C.int
+        with Import => True, Convention => C, External_Name => "get_broadcast_socket";
   begin
     return Integer(c_get_broadcast_socket);
   end get_broadcast_socket;
 
   --------------------------------------------------------------------------------
   function close_socket(sockfd: in Integer) return Integer is
+    function c_close_socket(sockfd: in C.int)  return C.int
+        with Import => True, Convention => C, External_Name => "close_socket";
     c_sockfd:  C.int               := C.int(sockfd);
     c_return: Integer;
   begin
@@ -74,6 +43,11 @@ package body UDP is
                        ip_host: in String;
                        ip_port: in Natural
                       ) return Integer is
+    function c_bind_socket(sockfd:  in out C.int;
+                           ip_host: in out C.char_array;
+                           ip_port: in     C.unsigned_short
+                          ) return C.int
+        with Import => True, Convention => C, External_Name => "bind_socket";
     c_sockfd:  C.int               := C.int(sockfd);
     c_ip_host: C.char_array        := C.To_C(ip_host);
     c_ip_port: C.unsigned_short    := C.unsigned_short(ip_port);
@@ -90,6 +64,13 @@ package body UDP is
                     msg:     in String;
                     msg_len: in Natural
                    ) return Integer is
+    function c_send_msg(sockfd:  in     C.int;
+                        ip_host: in out C.char_array;
+                        ip_port: in     C.unsigned_short;
+                        msg:     in out C.char_array;
+                        msg_len: in     C.unsigned
+                       ) return C.int
+        with Import => True, Convention => C, External_Name => "send_msg";
     c_sockfd:  C.int               := C.int(sockfd);
     c_ip_host: C.char_array        := C.To_C(ip_host);
     c_ip_port: C.unsigned_short    := C.unsigned_short(ip_port);
@@ -108,6 +89,13 @@ package body UDP is
                          msg:     in     String;
                          msg_len: in     Natural
                         ) return Integer is
+    function c_broadcast_msg(sockfd:  in     C.int;
+                             ip_host: in out C.char_array;
+                             ip_port: in     C.unsigned_short;
+                             msg:     in out C.char_array;
+                             msg_len: in     C.unsigned
+                            ) return C.int
+        with Import => True, Convention => C, External_Name => "broadcast_msg";
     c_sockfd:  C.int            := C.int(sockfd);
     c_ip_host: C.char_array     := C.To_C(ip_host);
     c_ip_port: C.unsigned_short := C.unsigned_short(ip_port);
@@ -126,6 +114,13 @@ package body UDP is
                     ip_host: in out String;
                     ip_port:    out Natural
                    ) return Integer is
+    function c_recv_msg(sockfd:  in     C.int;
+                        msg:        out C.char_array;
+                        msg_len:    out C.unsigned;
+                        ip_host:    out C.char_array;
+                        ip_port:    out C.unsigned_short
+                       ) return C.int
+        with Import => True, Convention => C, External_Name => "recv_msg";
     tmp_msg:     String(1..4096) := (others => Character'Val(0));
     tmp_ip_host: String(1..16)   := (others => Character'Val(0));
     c_sockfd:  C.int             := C.int(sockfd);
@@ -143,6 +138,13 @@ package body UDP is
     return Integer(c_return);
   end recv_msg;
 
+
+
+  --------------------------------------------------------------------------------
+  --  Other
+  --------------------------------------------------------------------------------
+
+
   --------------------------------------------------------------------------------
   procedure Split_IP (ip_addr: in     String;
                       ip_host:    out String;
@@ -159,3 +161,4 @@ package body UDP is
 
 
 end UDP;
+
