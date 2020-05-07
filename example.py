@@ -123,12 +123,15 @@ def run(args):
     server_dict = dict()
     server_dict["python"] = "./python/server.py"
     server_dict["c++"]    = "./cpp/bin/server"
+    server_dict["ada"]    = "./ada/bin/server_ada"
     client_dict = dict()
     client_dict["python"] = "./python/client.py"
     client_dict["c++"]    = "./cpp/bin/client"
+    client_dict["ada"]    = "./ada/bin/client_ada"
     sink_dict   = dict()
     sink_dict["python"]   = "./python/sink.py"
     sink_dict["c++"]      = "./cpp/bin/sink"
+    sink_dict["ada"]      = "./ada/bin/sink_ada"
     network_ip = IPv4Addr(args.network)
     bc_ip     = IPv4Addr(args.network)
     bc_ip[-1] = 255
