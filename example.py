@@ -200,6 +200,8 @@ def parse_args():
                    help="IP addr in the form X.Y.Z.0" )
     r.add_argument("-s", "--num-servers", type=int,
                    dest="num_servers", default=1)
+    r.add_argument("-t", "--num-threads", type=int,
+                   dest="num_threads", default=1)
     r.add_argument("-c", "--num-clients", type=int,
                    dest="num_clients", default=1)
     r.add_argument("-p", "--period", type=float, default=5)
